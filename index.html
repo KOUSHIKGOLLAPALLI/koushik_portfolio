@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Koushik Gollapalli portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a1a;
+            --bg-secondary: rgba(10, 10, 26, 0.7);
+            --text-primary: #ffffff;
+            --text-secondary: #d0d0f0;
+            --accent-1: #7c6aff;
+            --accent-2: #5a4aff;
+            --accent-3: #a88cff;
+            --accent-4: #ff6b9d;
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --glass-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+            --shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            --transition: 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            --card-bg: rgba(20, 20, 50, 0.85);
+        }
+
+        body.light {
+            --bg-primary: #f0f0ff;
+            --bg-secondary: rgba(240, 240, 255, 0.7);
+            --text-primary: #1a1a2e;
+            --text-secondary: #3a3a5e;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(106, 124, 255, 0.15);
+            --glass-shadow: 0 25px 50px rgba(106, 124, 255, 0.1);
+            --shadow: 0 25px 50px rgba(106, 124, 255, 0.1);
+            --card-bg: rgba(255, 255, 255, 0.85);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            transition: background 0.6s ease, color 0.6s ease;
+        }
+
+        /* Canvas - Now with semi-transparent overlay for better readability */
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+        }
+
+        /* Overlay to improve readability */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+            background: radial-gradient(ellipse at center, rgba(10, 10, 26, 0.3) 0%, rgba(10, 10, 26, 0.7) 100%);
+            pointer-events: none;
+        }
+        body.light .overlay {
+            background: radial-gradient(ellipse at center, rgba(240, 240, 255, 0.1) 0%, rgba(240, 240, 255, 0.4) 100%);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--accent-1); border-radius: 10px; }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            z-index: 1000;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            padding: 12px 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+        .theme-toggle:hover {
+            transform: scale(1.05);
+            background: rgba(124, 106, 255, 0.25);
+            box-shadow: 0 0 40px rgba(124, 106, 255, 0.2);
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 18px 40px;
+            z-index: 999;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 10, 26, 0.6);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--glass-border);
+            transition: all 0.4s ease;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+        }
+        body.light .navbar {
+            background: rgba(240, 240, 255, 0.7);
+        }
+        .navbar .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-4));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-1);
+            transition: width 0.3s ease;
+        }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-links a:hover { color: var(--text-primary); }
+
+        /* Main Content */
+        .content {
+            position: relative;
+            z-index: 10;
+            padding: 100px 2rem 4rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .hero-content {
+            max-width: 1200px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+        @media (max-width: 968px) {
+            .hero-content { grid-template-columns: 1fr; text-align: center; gap: 2rem; }
+            .navbar { padding: 15px 20px; }
+            .nav-links { gap: 1rem; }
+            .nav-links a { font-size: 0.8rem; }
+        }
+        @media (max-width: 500px) {
+            .nav-links { display: none; }
+        }
+
+        .hero-text .badge {
+            display: inline-block;
+            padding: 0.4rem 1.4rem;
+            border-radius: 50px;
+            background: rgba(124, 106, 255, 0.2);
+            border: 1px solid rgba(124, 106, 255, 0.3);
+            font-size: 0.85rem;
+            color: var(--accent-3);
+            margin-bottom: 1.5rem;
+            backdrop-filter: blur(8px);
+            font-weight: 600;
+        }
+        .hero-text h1 {
+            font-size: clamp(3rem, 8vw, 5.5rem);
+            font-weight: 900;
+            line-height: 1.05;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+        .hero-text h1 .highlight {
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-4), var(--accent-2));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .hero-text .typing {
+            font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+            font-weight: 400;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            min-height: 3rem;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
+        }
+        .hero-text .typing .cursor {
+            display: inline-block;
+            width: 3px;
+            height: 1.2em;
+            background: var(--accent-1);
+            animation: blink 0.8s step-end infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .hero-text p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            max-width: 500px;
+            margin-bottom: 2rem;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
+        }
+        .hero-text .cta-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        @media (max-width: 968px) {
+            .hero-text .cta-group { justify-content: center; }
+            .hero-text p { max-width: 100%; }
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0.9rem 2.2rem;
+            border-radius: 60px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            color: var(--text-primary);
+            cursor: pointer;
+            font-size: 0.95rem;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        }
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.6s ease;
+        }
+        .btn:hover::before { left: 100%; }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            border: none;
+            color: white;
+            box-shadow: 0 10px 30px rgba(124, 106, 255, 0.4);
+        }
+        .btn-primary:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(124, 106, 255, 0.5);
+        }
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+        }
+        .btn-secondary:hover {
+            transform: translateY(-5px);
+            background: rgba(124, 106, 255, 0.2);
+            border-color: var(--accent-1);
+        }
+        .btn-resume {
+            background: linear-gradient(135deg, var(--accent-4), #ff4d8a);
+            border: none;
+            color: white;
+            box-shadow: 0 10px 30px rgba(255, 107, 157, 0.4);
+        }
+        .btn-resume:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(255, 107, 157, 0.5);
+        }
+
+        /* Hero 3D Profile */
+        .hero-3d {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        .profile-3d-wrapper {
+            width: 350px;
+            height: 350px;
+            position: relative;
+        }
+        .profile-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid rgba(124, 106, 255, 0.3);
+            animation: spin 20s linear infinite;
+            box-shadow: 0 0 60px rgba(124, 106, 255, 0.1);
+        }
+        .profile-ring:nth-child(2) {
+            width: 80%;
+            height: 80%;
+            top: 10%;
+            left: 10%;
+            animation-duration: 15s;
+            animation-direction: reverse;
+            border-color: rgba(255, 107, 157, 0.3);
+        }
+        .profile-ring:nth-child(3) {
+            width: 60%;
+            height: 60%;
+            top: 20%;
+            left: 20%;
+            animation-duration: 10s;
+            border-color: rgba(168, 140, 255, 0.3);
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .profile-img-3d {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 4px solid var(--accent-1);
+            overflow: hidden;
+            box-shadow: 0 0 60px rgba(124, 106, 255, 0.3), inset 0 0 60px rgba(124, 106, 255, 0.1);
+        }
+        .profile-img-3d img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Sections */
+        .section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 6rem 2rem;
+        }
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+        }
+        .section-title .highlight {
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-4));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .section-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Skills */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+        }
+        .skill-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            padding: 1.5rem;
+            border-radius: 1.5rem;
+            text-align: center;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        }
+        .skill-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent-1);
+            box-shadow: 0 15px 40px rgba(124, 106, 255, 0.2);
+        }
+        .skill-card .icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .skill-card .name {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .skill-card .level {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin-top: 0.8rem;
+            overflow: hidden;
+        }
+        body.light .skill-card .level {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        .skill-card .level .fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-1), var(--accent-4));
+            border-radius: 4px;
+            transition: width 1.5s ease;
+            width: 0;
+        }
+
+        /* Projects */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+        .project-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            padding: 2rem;
+            border-radius: 2rem;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        }
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(124, 106, 255, 0.08), transparent);
+            transition: all 0.6s ease;
+        }
+        .project-card:hover::before {
+            top: 0;
+            right: 0;
+        }
+        .project-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent-1);
+            box-shadow: 0 20px 50px rgba(124, 106, 255, 0.15);
+        }
+        .project-card .tech {
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            border-radius: 50px;
+            background: rgba(124, 106, 255, 0.15);
+            color: var(--accent-3);
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+        }
+        .project-card h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .project-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 2.5rem;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--accent-1), var(--accent-4));
+        }
+        .timeline-item {
+            padding: 1.5rem 2rem;
+            margin-bottom: 1.5rem;
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 1.5rem;
+            transition: all 0.4s ease;
+            position: relative;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2.5rem;
+            top: 2rem;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--accent-1);
+            border: 2px solid var(--bg-primary);
+            box-shadow: 0 0 20px rgba(124, 106, 255, 0.3);
+        }
+        .timeline-item:hover {
+            transform: translateX(8px);
+            border-color: var(--accent-1);
+        }
+        .timeline-item .date {
+            font-size: 0.8rem;
+            color: var(--accent-3);
+            font-weight: 600;
+        }
+        .timeline-item h3 {
+            font-size: 1.1rem;
+            margin: 0.3rem 0;
+        }
+        .timeline-item p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Contact */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+        @media (max-width: 768px) {
+            .contact-grid { grid-template-columns: 1fr; }
+        }
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 1.2rem 1.8rem;
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 1.5rem;
+            transition: all 0.4s ease;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+        .contact-item:hover {
+            transform: translateX(8px);
+            border-color: var(--accent-1);
+        }
+        .contact-item .icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(124, 106, 255, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: var(--accent-1);
+        }
+        .contact-item .info h4 {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .contact-item .info p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1rem;
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 1rem;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        }
+        .contact-form input::placeholder,
+        .contact-form textarea::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.6;
+        }
+        .contact-form input:focus,
+        .contact-form textarea:focus {
+            outline: none;
+            border-color: var(--accent-1);
+            box-shadow: 0 0 30px rgba(124, 106, 255, 0.1);
+        }
+        .contact-form textarea {
+            height: 150px;
+            resize: vertical;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 3rem;
+            border-top: 1px solid var(--glass-border);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            background: var(--bg-secondary);
+            backdrop-filter: blur(8px);
+        }
+        .footer .socials {
+            display: flex;
+            gap: 1.2rem;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        .footer .socials a {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+        .footer .socials a:hover {
+            color: var(--accent-1);
+            transform: translateY(-5px);
+            border-color: var(--accent-1);
+            box-shadow: 0 10px 30px rgba(124, 106, 255, 0.2);
+        }
+
+        /* Floating particles */
+        .floating-particle {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: var(--accent-1);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.15;
+            animation: float-particle 20s infinite linear;
+        }
+        @keyframes float-particle {
+            0% { transform: translateY(0) translateX(0); opacity: 0.1; }
+            50% { opacity: 0.3; }
+            100% { transform: translateY(-100vh) translateX(100px); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Overlay for better readability -->
+    <div class="overlay"></div>
+
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" onclick="toggleTheme()">
+        <i class="fas fa-moon"></i> <span id="theme-label">Dark</span>
+    </button>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo">KG</div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#experience">Experience</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- 3D Canvas -->
+    <div id="canvas-container"></div>
+
+    <!-- Floating Particles -->
+    <div class="floating-particle" style="left:10%; animation-duration:25s;"></div>
+    <div class="floating-particle" style="left:25%; animation-duration:18s; animation-delay:2s;"></div>
+    <div class="floating-particle" style="left:45%; animation-duration:22s; animation-delay:5s;"></div>
+    <div class="floating-particle" style="left:65%; animation-duration:16s; animation-delay:1s;"></div>
+    <div class="floating-particle" style="left:80%; animation-duration:20s; animation-delay:4s;"></div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <!-- Hero -->
+        <section class="hero" id="home">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <div class="badge">
+                        <i class="fas fa-code"></i> Available for opportunities
+                    </div>
+                    <h1>
+                        Hi, I'm <br />
+                        <span class="highlight">Koushik Gollapalli</span>
+                    </h1>
+                    <div class="typing">
+                        <span id="typing-text"></span><span class="cursor"></span>
+                    </div>
+                    <p>
+                        CSE student passionate about building innovative solutions with cloud, AI, and security. 
+                        I love turning complex problems into elegant, scalable applications.
+                    </p>
+                    <div class="cta-group">
+                        <a href="#projects" class="btn btn-primary">
+                            <i class="fas fa-rocket"></i> View My Work
+                        </a>
+                        <a href="C:\Users\koush\OneDrive\Desktop\koushik resume\koushik latest resume.pdf" download class="btn btn-resume">
+                            <i class="fas fa-file-pdf"></i> Resume
+                        </a>
+                        <a href="#contact" class="btn btn-secondary">
+                            <i class="fas fa-paper-plane"></i> Contact
+                        </a>
+                    </div>
+                </div>
+                <div class="hero-3d">
+                    <div class="profile-3d-wrapper">
+                        <div class="profile-ring"></div>
+                        <div class="profile-ring"></div>
+                        <div class="profile-ring"></div>
+                        <div class="profile-img-3d">
+                            <img src="C:\Users\koush\OneDrive\Desktop\koushik resume\koushik.jpeg" alt="Koushik Gollapalli" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills -->
+        <section class="section" id="skills">
+            <h2 class="section-title">My <span class="highlight">Skills</span></h2>
+            <p class="section-subtitle">Technologies & tools I work with</p>
+            <div class="skills-grid" id="skillsGrid">
+                <!-- Skills will be populated by JS -->
+            </div>
+        </section>
+
+        <!-- Projects -->
+        <section class="section" id="projects">
+            <h2 class="section-title">Featured <span class="highlight">Projects</span></h2>
+            <p class="section-subtitle">Some of my best work</p>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <span class="tech">AWS · Python</span>
+                    <h3>Face Recognition Attendance</h3>
+                    <p>Real-time attendance tracking using AWS S3, Lambda, and facial recognition. Automated image capture and cloud processing.</p>
+                </div>
+                <div class="project-card">
+                    <span class="tech">Java · Security</span>
+                    <h3>Advanced Encryption Tool</h3>
+                    <p>Secure file encryption/decryption with AES-256 algorithm. Implemented key management and user-friendly interface.</p>
+                </div>
+                <div class="project-card">
+                    <span class="tech">AI · DeepSeek</span>
+                    <h3>Kavi - AI Assistant</h3>
+                    <p>Voice + text AI assistant with speech recognition and PC control. Integrated DeepSeek AI for intelligent responses.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Experience / Timeline -->
+        <section class="section" id="experience">
+            <h2 class="section-title">Education & <span class="highlight">Experience</span></h2>
+            <p class="section-subtitle">My journey so far</p>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="date">2022 - 2026</div>
+                    <h3>B.Tech in CSE</h3>
+                    <p>Kamala Institute of Technology and Science · CGPA: 8.24</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="date">2025</div>
+                    <h3>Cybersecurity Internship</h3>
+                    <p>Codtech · Penetration testing, SQL security, Linux-based testing</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="date">2023 - 2026</div>
+                    <h3>Cultural Head</h3>
+                    <p>College Cultural Committee · Organized events, technical tests, and student engagement</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="date">2022 - 2026</div>
+                    <h3>Class Representative</h3>
+                    <p>Bridge between students and faculty · Coordinated academics and communication</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact -->
+        <section class="section" id="contact">
+            <h2 class="section-title">Get In <span class="highlight">Touch</span></h2>
+            <p class="section-subtitle">Let's build something amazing together</p>
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="icon"><i class="fas fa-envelope"></i></div>
+                        <div class="info">
+                            <h4>Email</h4>
+                            <p>koushikgollapalli3@gmail.com</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="icon"><i class="fas fa-phone"></i></div>
+                        <div class="info">
+                            <h4>Phone</h4>
+                            <p>+91 9346400095</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="icon"><i class="fab fa-github"></i></div>
+                        <div class="info">
+                            <h4>GitHub</h4>
+                            <p>KOUSHIKGOLAPALLI</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="icon"><i class="fab fa-linkedin-in"></i></div>
+                        <div class="info">
+                            <h4>LinkedIn</h4>
+                            <p>koushik-gollapalli</p>
+                        </div>
+                    </div>
+                </div>
+                <form class="contact-form" onsubmit="event.preventDefault(); alert('Thanks for reaching out! I\'ll get back to you soon.')">
+                    <input type="text" placeholder="Your Name" required />
+                    <input type="email" placeholder="Your Email" required />
+                    <input type="text" placeholder="Subject" />
+                    <textarea placeholder="Your Message" required></textarea>
+                    <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">
+                        <i class="fas fa-paper-plane"></i> Send Message
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="socials">
+                <a href="https://github.com/KOUSHIKGOLLAPALLI" target="_blank"><i class="fab fa-github"></i></a>
+                <a href="https://www.linkedin.com/in/koushik-gollapalli-9583412bb/?skipRedirect=true" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+                <a href="mailto:koushikgollapalli3@gmail.com"><i class="fas fa-envelope"></i></a>
+            </div>
+            <p>© 2026 Koushik Gollapalli </p>
+        </footer>
+    </div>
+
+    <!-- Three.js -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.157.0/build/three.module.js"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x0a0a1a);
+
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 0, 12);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        container.appendChild(renderer.domElement);
+
+        // Galaxy Particles - More subtle
+        const particleCount = 2000;
+        const galaxyGeo = new THREE.BufferGeometry();
+        const positions = new Float32Array(particleCount * 3);
+        const colors = new Float32Array(particleCount * 3);
+        const sizes = new Float32Array(particleCount);
+
+        const color1 = new THREE.Color(0x7c6aff);
+        const color2 = new THREE.Color(0xff6b9d);
+        const color3 = new THREE.Color(0x4a3aff);
+
+        for (let i = 0; i < particleCount; i++) {
+            const radius = 2 + Math.random() * 6;
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.acos((Math.random() * 2) - 1);
+
+            positions[i * 3] = Math.sin(phi) * Math.cos(theta) * radius;
+            positions[i * 3 + 1] = Math.sin(phi) * Math.sin(theta) * radius * 0.4;
+            positions[i * 3 + 2] = Math.cos(phi) * radius;
+
+            const c = Math.random() > 0.5 ? color1 : (Math.random() > 0.5 ? color2 : color3);
+            colors[i * 3] = c.r * 0.5;
+            colors[i * 3 + 1] = c.g * 0.5;
+            colors[i * 3 + 2] = c.b * 0.5;
+
+            sizes[i] = 0.02 + Math.random() * 0.04;
+        }
+
+        galaxyGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        galaxyGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+        galaxyGeo.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+
+        const particleMat = new THREE.PointsMaterial({
+            size: 0.04,
+            transparent: true,
+            opacity: 0.6,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false,
+            vertexColors: true,
+        });
+
+        const galaxy = new THREE.Points(galaxyGeo, particleMat);
+        scene.add(galaxy);
+
+        // Rotating geometric shapes - More subtle
+        const shapes = [];
+        const geometries = [
+            new THREE.IcosahedronGeometry(0.25, 0),
+            new THREE.OctahedronGeometry(0.25, 0),
+            new THREE.TetrahedronGeometry(0.25, 0),
+            new THREE.BoxGeometry(0.25, 0.25, 0.25),
+            new THREE.DodecahedronGeometry(0.25, 0),
+        ];
+
+        for (let i = 0; i < 20; i++) {
+            const geo = geometries[i % geometries.length];
+            const mat = new THREE.MeshStandardMaterial({
+                color: new THREE.Color().setHSL(0.7 + Math.random() * 0.2, 0.6, 0.4),
+                metalness: 0.3,
+                roughness: 0.4,
+                emissive: new THREE.Color().setHSL(0.7 + Math.random() * 0.2, 0.6, 0.1),
+                emissiveIntensity: 0.2,
+                transparent: true,
+                opacity: 0.6,
+            });
+            const mesh = new THREE.Mesh(geo, mat);
+            
+            const radius = 2 + Math.random() * 3;
+            const angle = Math.random() * Math.PI * 2;
+            const height = (Math.random() - 0.5) * 3;
+            
+            mesh.position.set(
+                Math.cos(angle) * radius,
+                height,
+                Math.sin(angle) * radius
+            );
+            mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
+            
+            mesh.userData = {
+                radius,
+                angle,
+                height,
+                speed: 0.05 + Math.random() * 0.1,
+                rotSpeed: 0.3 + Math.random() * 0.8,
+                floatSpeed: 0.2 + Math.random() * 0.3,
+                floatOffset: Math.random() * 10,
+            };
+            
+            scene.add(mesh);
+            shapes.push(mesh);
+        }
+
+        // Central glowing sphere - More subtle
+        const glowGeo = new THREE.SphereGeometry(0.3, 32, 32);
+        const glowMat = new THREE.MeshStandardMaterial({
+            color: 0x7c6aff,
+            emissive: 0x4a3aff,
+            emissiveIntensity: 0.5,
+            roughness: 0.1,
+            metalness: 0.1,
+            transparent: true,
+            opacity: 0.3,
+        });
+        const glowSphere = new THREE.Mesh(glowGeo, glowMat);
+        glowSphere.position.set(0, 0, 0);
+        scene.add(glowSphere);
+
+        // Orbit particles
+        const orbitParticles = new THREE.BufferGeometry();
+        const orbitCount = 150;
+        const orbitPos = new Float32Array(orbitCount * 3);
+        for (let i = 0; i < orbitCount; i++) {
+            const angle = (i / orbitCount) * Math.PI * 2;
+            const radius = 0.7 + Math.random() * 0.3;
+            orbitPos[i * 3] = Math.cos(angle) * radius;
+            orbitPos[i * 3 + 1] = (Math.random() - 0.5) * 0.2;
+            orbitPos[i * 3 + 2] = Math.sin(angle) * radius;
+        }
+        orbitParticles.setAttribute('position', new THREE.BufferAttribute(orbitPos, 3));
+        const orbitMat = new THREE.PointsMaterial({
+            color: 0xa88cff,
+            size: 0.02,
+            transparent: true,
+            opacity: 0.4,
+            blending: THREE.AdditiveBlending,
+        });
+        const orbitPoints = new THREE.Points(orbitParticles, orbitMat);
+        scene.add(orbitPoints);
+
+        // Lights - Brighter for better visibility
+        const ambient = new THREE.AmbientLight(0x333366);
+        scene.add(ambient);
+
+        const dirLight = new THREE.DirectionalLight(0xffeedd, 2);
+        dirLight.position.set(5, 5, 5);
+        scene.add(dirLight);
+
+        const backLight = new THREE.DirectionalLight(0x4466ff, 1);
+        backLight.position.set(-5, -2, -5);
+        scene.add(backLight);
+
+        const pointLight = new THREE.PointLight(0x7c6aff, 0.5, 8);
+        pointLight.position.set(0, 0, 0);
+        scene.add(pointLight);
+
+        // Mouse tracking
+        let mouseX = 0, mouseY = 0;
+        document.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+            mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+        });
+
+        // Animation
+        function animate() {
+            const time = performance.now() * 0.001;
+
+            galaxy.rotation.y = time * 0.015;
+            galaxy.rotation.x = Math.sin(time * 0.008) * 0.03;
+
+            shapes.forEach((mesh) => {
+                const data = mesh.userData;
+                data.angle += data.speed * 0.01;
+                const floatY = Math.sin(time * data.floatSpeed + data.floatOffset) * 0.2;
+                
+                mesh.position.x = Math.cos(data.angle) * data.radius;
+                mesh.position.z = Math.sin(data.angle) * data.radius;
+                mesh.position.y = data.height + floatY;
+                
+                mesh.rotation.x += data.rotSpeed * 0.01;
+                mesh.rotation.y += data.rotSpeed * 0.015;
+            });
+
+            orbitPoints.rotation.y = time * 0.2;
+            glowSphere.scale.setScalar(1 + Math.sin(time * 1.2) * 0.05);
+
+            // Subtle camera movement
+            camera.position.x = mouseX * 0.8;
+            camera.position.y = mouseY * 0.4;
+            camera.lookAt(0, 0, 0);
+
+            renderer.render(scene, camera);
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        window.toggleTheme = function() {
+            document.body.classList.toggle('light');
+            const label = document.getElementById('theme-label');
+            const icon = document.querySelector('.theme-toggle i');
+            if (document.body.classList.contains('light')) {
+                label.textContent = 'Light';
+                icon.className = 'fas fa-sun';
+                scene.background = new THREE.Color(0xf0f0ff);
+            } else {
+                label.textContent = 'Dark';
+                icon.className = 'fas fa-moon';
+                scene.background = new THREE.Color(0x0a0a1a);
+            }
+        };
+    </script>
+
+    <script>
+        // Typing effect
+        const words = [
+            'Software Engineer 👨‍💻',
+            'Developer 🚀',
+            'Cybersecurity Enthusiast 🔒',
+            'Cloud & AI Explorer ☁️',
+            'Problem Solver 💡'
+        ];
+        let wordIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        const typingElement = document.getElementById('typing-text');
+
+        function typeEffect() {
+            const currentWord = words[wordIndex];
+            if (isDeleting) {
+                typingElement.textContent = currentWord.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                typingElement.textContent = currentWord.substring(0, charIndex + 1);
+                charIndex++;
+            }
+
+            if (!isDeleting && charIndex === currentWord.length) {
+                setTimeout(() => { isDeleting = true; }, 2000);
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                wordIndex = (wordIndex + 1) % words.length;
+            }
+
+            setTimeout(typeEffect, isDeleting ? 50 : 100);
+        }
+        typeEffect();
+
+        // Skills data
+        const skills = [
+            { name: 'Java', icon: 'fab fa-java', level: 85 },
+            { name: 'Python', icon: 'fab fa-python', level: 80 },
+            { name: 'JavaScript', icon: 'fab fa-js', level: 75 },
+            { name: 'AWS', icon: 'fab fa-aws', level: 70 },
+            { name: 'Git/GitHub', icon: 'fab fa-git-alt', level: 85 },
+            { name: 'MYSQL', icon: 'fas fa-database', level: 75 },
+            { name: 'HTML/CSS', icon: 'fab fa-html5', level: 80 },
+            { name: 'Cybersecurity', icon: 'fas fa-shield-alt', level: 70 },
+        ];
+
+        const skillsGrid = document.getElementById('skillsGrid');
+        skills.forEach((skill) => {
+            const card = document.createElement('div');
+            card.className = 'skill-card';
+            card.innerHTML = `
+                <div class="icon"><i class="${skill.icon}"></i></div>
+                <div class="name">${skill.name}</div>
+                <div class="level"><div class="fill" style="width: 0%;" data-level="${skill.level}"></div></div>
+            `;
+            skillsGrid.appendChild(card);
+        });
+
+        // Animate skill bars on scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const fills = entry.target.querySelectorAll('.fill');
+                    fills.forEach(fill => {
+                        const level = fill.dataset.level;
+                        setTimeout(() => {
+                            fill.style.width = level + '%';
+                        }, 300);
+                    });
+                }
+            });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll('.skill-card').forEach(card => {
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>
