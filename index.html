@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
     <style>
         * {
             margin: 0;
@@ -700,6 +701,265 @@
             50% { opacity: 0.3; }
             100% { transform: translateY(-100vh) translateX(100px); opacity: 0; }
         }
+
+        /* ===== Enhanced portfolio UI ===== */
+        :root {
+            --accent-cyan: #4de8ff;
+            --accent-green: #64f6a1;
+            --accent-yellow: #ffd166;
+        }
+
+        body {
+            background:
+                radial-gradient(circle at 15% 20%, rgba(124,106,255,.10), transparent 30%),
+                radial-gradient(circle at 85% 75%, rgba(77,232,255,.07), transparent 28%),
+                var(--bg-primary);
+        }
+
+        .navbar.scrolled {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            background: rgba(8, 8, 22, .88);
+        }
+
+        .nav-links a.active { color: var(--text-primary); }
+        .nav-links a.active::after { width: 100%; }
+
+        .mobile-menu {
+            display: none;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            color: var(--text-primary);
+            border-radius: 12px;
+            padding: 10px 12px;
+            cursor: pointer;
+        }
+
+        .hero-kicker {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 1rem;
+        }
+        .mini-pill {
+            padding: 7px 11px;
+            border-radius: 999px;
+            border: 1px solid rgba(77,232,255,.25);
+            background: rgba(77,232,255,.07);
+            color: var(--accent-cyan);
+            font-size: .72rem;
+            font-weight: 700;
+            letter-spacing: .04em;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0,1fr));
+            gap: 12px;
+            max-width: 620px;
+            margin-top: 1.5rem;
+        }
+        .stat-card {
+            padding: 15px;
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            background: rgba(255,255,255,.045);
+            backdrop-filter: blur(12px);
+        }
+        .stat-card strong {
+            display: block;
+            font-size: 1.35rem;
+            color: var(--text-primary);
+        }
+        .stat-card span { font-size: .72rem; color: var(--text-secondary); }
+
+        .skill-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px;
+            margin-bottom: 1.7rem;
+        }
+        .filter-btn {
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            color: var(--text-secondary);
+            padding: 8px 13px;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: .25s ease;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            color: white;
+            border-color: var(--accent-1);
+            background: rgba(124,106,255,.22);
+            transform: translateY(-2px);
+        }
+
+        .skill-card {
+            position: relative;
+            overflow: hidden;
+        }
+        .skill-card::after {
+            content: "";
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            right: -40px;
+            top: -40px;
+            background: var(--accent-1);
+            filter: blur(45px);
+            opacity: .18;
+            pointer-events: none;
+        }
+        .skill-card .category {
+            display: block;
+            margin-top: 5px;
+            font-size: .67rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: .08em;
+        }
+        .skill-card.is-hidden { display: none; }
+
+        .project-card {
+            cursor: pointer;
+        }
+        .project-card .project-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: .5rem;
+        }
+        .project-arrow {
+            color: var(--accent-cyan);
+            transition: .3s ease;
+        }
+        .project-card:hover .project-arrow { transform: translate(4px,-4px); }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+            margin-top: 1rem;
+        }
+        .stack-chip {
+            font-size: .68rem;
+            padding: 5px 9px;
+            border-radius: 8px;
+            background: rgba(255,255,255,.06);
+            border: 1px solid var(--glass-border);
+            color: var(--text-secondary);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity .7s ease, transform .7s ease;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(2,2,10,.78);
+            backdrop-filter: blur(14px);
+        }
+        .modal.open { display: flex; }
+        .modal-box {
+            width: min(720px, 100%);
+            max-height: 85vh;
+            overflow: auto;
+            padding: 2rem;
+            border-radius: 24px;
+            background: rgba(17,17,40,.96);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 30px 100px rgba(0,0,0,.55);
+        }
+        .modal-close {
+            float: right;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            color: white;
+            cursor: pointer;
+        }
+        .modal-box h3 { font-size: 1.7rem; margin: .7rem 0; }
+        .modal-box p { color: var(--text-secondary); line-height: 1.75; }
+        .modal-box ul { margin: 1rem 0 0 1.2rem; color: var(--text-secondary); line-height: 1.8; }
+
+        .back-top {
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            z-index: 1200;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            color: var(--text-primary);
+            cursor: pointer;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(10px);
+            transition: .3s ease;
+        }
+        .back-top.show {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        .availability-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-green);
+            box-shadow: 0 0 12px var(--accent-green);
+            margin-right: 7px;
+        }
+
+        @media (max-width: 700px) {
+            .mobile-menu { display: block; }
+            .nav-links {
+                position: absolute;
+                top: 70px;
+                left: 15px;
+                right: 15px;
+                display: none;
+                flex-direction: column;
+                padding: 15px;
+                border: 1px solid var(--glass-border);
+                border-radius: 18px;
+                background: rgba(10,10,26,.94);
+                backdrop-filter: blur(16px);
+            }
+            .nav-links.open { display: flex; }
+            .stats-row { grid-template-columns: 1fr; }
+            .profile-3d-wrapper { width: 290px; height: 290px; }
+            .profile-img-3d { width: 175px; height: 175px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: .01ms !important;
+                transition-duration: .01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -713,13 +973,14 @@
     </button>
 
     <!-- Navigation -->
-    <nav class="navbar">
-        <div class="logo">KG</div>
-        <ul class="nav-links">
-            <li><a href="#home">Home</a></li>
+    <nav class="navbar" id="navbar">
+        <div class="logo">KG<span style="font-size:.55em;opacity:.6;"> / DEV</span></div>
+        <button class="mobile-menu" id="mobileMenu" aria-label="Open navigation"><i class="fas fa-bars"></i></button>
+        <ul class="nav-links" id="navLinks">
+            <li><a class="active" href="#home">Home</a></li>
             <li><a href="#skills">Skills</a></li>
             <li><a href="#projects">Projects</a></li>
-            <li><a href="#experience">Experience</a></li>
+            <li><a href="#experience">Journey</a></li>
             <li><a href="#contact">Contact</a></li>
         </ul>
     </nav>
@@ -771,7 +1032,6 @@
                         <div class="profile-ring"></div>
                         <div class="profile-ring"></div>
                         <div class="profile-img-3d" id="profileContainer">
-                    <div class="profile-img-3d" id="profileContainer">
     <img
         id="profilePhoto"
         src="https://i.postimg.cc/9Q0cdpK0/koushik.jpg"
@@ -787,7 +1047,7 @@
         </section>
 
         <!-- Skills -->
-        <section class="section" id="skills">
+        <section class="section reveal" id="skills">
             <h2 class="section-title">My <span class="highlight">Skills</span></h2>
             <p class="section-subtitle">Technologies & tools I work with</p>
             <div class="skills-grid" id="skillsGrid">
@@ -796,30 +1056,45 @@
         </section>
 
         <!-- Projects -->
-        <section class="section" id="projects">
+        <section class="section reveal" id="projects">
             <h2 class="section-title">Featured <span class="highlight">Projects</span></h2>
             <p class="section-subtitle">Some of my best work</p>
             <div class="projects-grid">
-                <div class="project-card">
-                    <span class="tech">AWS · Python</span>
+                <div class="project-card reveal" data-project="attendance">
+                    <div class="project-top"><span class="tech">AWS · Python</span><i class="fas fa-arrow-up-right-from-square project-arrow"></i></div>
                     <h3>Face Recognition Attendance</h3>
-                    <p>Real-time attendance tracking using AWS S3, Lambda, and facial recognition. Automated image capture and cloud processing.</p>
+                    <p>Cloud-connected attendance workflow using image capture, recognition and automated processing.</p>
+                    <div class="tech-stack"><span class="stack-chip">S3</span><span class="stack-chip">Lambda</span><span class="stack-chip">Python</span></div>
                 </div>
-                <div class="project-card">
-                    <span class="tech">Java · Security</span>
+                <div class="project-card reveal" data-project="encryption">
+                    <div class="project-top"><span class="tech">Java · Security</span><i class="fas fa-arrow-up-right-from-square project-arrow"></i></div>
                     <h3>Advanced Encryption Tool</h3>
-                    <p>Secure file encryption/decryption with AES-256 algorithm. Implemented key management and user-friendly interface.</p>
+                    <p>Secure file encryption/decryption workflow using AES-256 with key-management considerations.</p>
+                    <div class="tech-stack"><span class="stack-chip">Java</span><span class="stack-chip">AES-256</span><span class="stack-chip">Security</span></div>
                 </div>
-                <div class="project-card">
-                    <span class="tech">AI · DeepSeek</span>
-                    <h3>Kavi - AI Assistant</h3>
-                    <p>Voice + text AI assistant with speech recognition and PC control. Integrated DeepSeek AI for intelligent responses.</p>
+                <div class="project-card reveal" data-project="kavi">
+                    <div class="project-top"><span class="tech">AI · DeepSeek</span><i class="fas fa-arrow-up-right-from-square project-arrow"></i></div>
+                    <h3>Kavi — AI Assistant</h3>
+                    <p>Voice + text assistant with speech recognition, AI responses and PC-control capabilities.</p>
+                    <div class="tech-stack"><span class="stack-chip">AI</span><span class="stack-chip">Voice</span><span class="stack-chip">Python</span></div>
+                </div>
+                <div class="project-card reveal" data-project="hls-properties">
+                    <div class="project-top"><span class="tech">Web · Real Estate</span><i class="fas fa-arrow-up-right-from-square project-arrow"></i></div>
+                    <h3>HLS Properties — Cars</h3>
+                    <p>Interactive property and car-focused web experience designed to present listings with a clean, modern browsing flow.</p>
+                    <div class="tech-stack"><span class="stack-chip">Web Development</span><span class="stack-chip">UI/UX</span><span class="stack-chip">Responsive</span></div>
+                </div>
+                <div class="project-card reveal" data-project="chatx">
+                    <div class="project-top"><span class="tech">Full Stack · Chat</span><i class="fas fa-arrow-up-right-from-square project-arrow"></i></div>
+                    <h3>ChatX</h3>
+                    <p>Real-time chat application concept focused on fast communication, responsive UI and a smooth messaging experience.</p>
+                    <div class="tech-stack"><span class="stack-chip">Real-time</span><span class="stack-chip">Web</span><span class="stack-chip">Chat</span></div>
                 </div>
             </div>
         </section>
 
         <!-- Experience / Timeline -->
-        <section class="section" id="experience">
+        <section class="section reveal" id="experience">
             <h2 class="section-title">Education & <span class="highlight">Experience</span></h2>
             <p class="section-subtitle">My journey so far</p>
             <div class="timeline">
@@ -847,7 +1122,7 @@
         </section>
 
         <!-- Contact -->
-        <section class="section" id="contact">
+        <section class="section reveal" id="contact">
             <h2 class="section-title">Get In <span class="highlight">Touch</span></h2>
             <p class="section-subtitle">Let's build something amazing together</p>
             <div class="contact-grid">
@@ -892,6 +1167,18 @@
                 </form>
             </div>
         </section>
+
+
+        <div class="modal" id="projectModal" aria-hidden="true">
+            <div class="modal-box">
+                <button class="modal-close" id="modalClose" aria-label="Close project"><i class="fas fa-xmark"></i></button>
+                <span class="tech" id="modalTech">Project</span>
+                <h3 id="modalTitle"></h3>
+                <p id="modalDescription"></p>
+                <ul id="modalPoints"></ul>
+            </div>
+        </div>
+        <button class="back-top" id="backTop" aria-label="Back to top"><i class="fas fa-arrow-up"></i></button>
 
         <!-- Footer -->
         <footer class="footer">
@@ -1140,10 +1427,10 @@
         // Typing effect
         const words = [
             'Software Engineer 👨‍💻',
-            'Developer 🚀',
-            'Cybersecurity Enthusiast 🔒',
-            'Cloud & AI Explorer ☁️',
-            'Problem Solver 💡'
+            'Cloud & DevOps Learner ☁️',
+            'AI / RAG Builder 🧠',
+            'System Design Enthusiast 🏗️',
+            'Cybersecurity Explorer 🔒'
         ];
         let wordIndex = 0;
         let charIndex = 0;
@@ -1171,48 +1458,167 @@
         }
         typeEffect();
 
-        // Skills data
+        // Interactive skills
         const skills = [
-            { name: 'Java', icon: 'fab fa-java', level: 85 },
-            { name: 'Python', icon: 'fab fa-python', level: 80 },
-            { name: 'JavaScript', icon: 'fab fa-js', level: 75 },
-            { name: 'AWS', icon: 'fab fa-aws', level: 70 },
-            { name: 'Git/GitHub', icon: 'fab fa-git-alt', level: 85 },
-            { name: 'MYSQL', icon: 'fas fa-database', level: 75 },
-            { name: 'HTML/CSS', icon: 'fab fa-html5', level: 80 },
-            { name: 'Cybersecurity', icon: 'fas fa-shield-alt', level: 70 },
+            { name:'Java', icon:'devicon-java-plain', level:85, category:'development' },
+            { name:'Python', icon:'devicon-python-plain', level:82, category:'development' },
+            { name:'JavaScript', icon:'devicon-javascript-plain', level:75, category:'development' },
+            { name:'HTML / CSS', icon:'devicon-html5-plain', level:88, category:'development' },
+            { name:'SQL / MySQL', icon:'fas fa-database', level:78, category:'development' },
+            { name:'AWS', icon:'devicon-amazonwebservices-plain-wordmark', level:72, category:'cloud' },
+            { name:'Docker', icon:'devicon-docker-plain', level:68, category:'cloud' },
+            { name:'Linux', icon:'devicon-linux-plain', level:75, category:'cloud' },
+            { name:'Git / GitHub', icon:'devicon-github-original', level:86, category:'development' },
+            { name:'RAG', icon:'fas fa-brain', level:68, category:'ai' },
+            { name:'AI / LLMs', icon:'fas fa-microchip', level:72, category:'ai' },
+            { name:'System Design', icon:'fas fa-diagram-project', level:65, category:'development' },
+            { name:'Cybersecurity', icon:'fas fa-shield-halved', level:70, category:'security' },
+            { name:'REST APIs', icon:'fas fa-network-wired', level:78, category:'development' },
+            { name:'Cloud Security', icon:'fas fa-cloud', level:62, category:'security' }
         ];
 
         const skillsGrid = document.getElementById('skillsGrid');
         skills.forEach((skill) => {
             const card = document.createElement('div');
-            card.className = 'skill-card';
+            card.className = 'skill-card reveal';
+            card.dataset.category = skill.category;
             card.innerHTML = `
                 <div class="icon"><i class="${skill.icon}"></i></div>
                 <div class="name">${skill.name}</div>
-                <div class="level"><div class="fill" style="width: 0%;" data-level="${skill.level}"></div></div>
+                <span class="category">${skill.category.replace('-', ' ')}</span>
+                <div class="level"><div class="fill" data-level="${skill.level}"></div></div>
             `;
             skillsGrid.appendChild(card);
         });
 
-        // Animate skill bars on scroll
-        const observer = new IntersectionObserver((entries) => {
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const filter = btn.dataset.filter;
+                document.querySelectorAll('.skill-card').forEach(card => {
+                    card.classList.toggle('is-hidden', filter !== 'all' && card.dataset.category !== filter);
+                });
+            });
+        });
+
+        // Scroll reveal + skill bar animation
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                entry.target.classList.add('visible');
+                entry.target.querySelectorAll('.fill').forEach(fill => {
+                    fill.style.width = fill.dataset.level + '%';
+                });
+                revealObserver.unobserve(entry.target);
+            });
+        }, { threshold: 0.14 });
+
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+        // Navigation state + mobile menu
+        const navbar = document.getElementById('navbar');
+        const navLinks = document.getElementById('navLinks');
+        document.getElementById('mobileMenu').addEventListener('click', () => navLinks.classList.toggle('open'));
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => navLinks.classList.remove('open'));
+        });
+
+        const sections = [...document.querySelectorAll('section[id]')];
+        const navObserver = new IntersectionObserver(entries => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    const fills = entry.target.querySelectorAll('.fill');
-                    fills.forEach(fill => {
-                        const level = fill.dataset.level;
-                        setTimeout(() => {
-                            fill.style.width = level + '%';
-                        }, 300);
-                    });
+                    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+                    const active = document.querySelector(`.nav-links a[href="#${entry.target.id}"]`);
+                    if (active) active.classList.add('active');
                 }
             });
-        }, { threshold: 0.2 });
+        }, { rootMargin:'-30% 0px -55% 0px' });
+        sections.forEach(section => navObserver.observe(section));
 
-        document.querySelectorAll('.skill-card').forEach(card => {
-            observer.observe(card);
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('scrolled', window.scrollY > 30);
+            document.getElementById('backTop').classList.toggle('show', window.scrollY > 500);
+        }, { passive:true });
+
+        document.getElementById('backTop').addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+
+        // Project detail modal
+        const projectDetails = {
+            attendance: {
+                title:'Face Recognition Attendance',
+                tech:'AWS · Python',
+                description:'A cloud-based attendance workflow that combines image capture, recognition and automated processing.',
+                points:['AWS S3 for image/object storage','AWS Lambda for serverless processing','Python for recognition and application logic']
+            },
+            encryption: {
+                title:'Advanced Encryption Tool',
+                tech:'Java · Security',
+                description:'A desktop-oriented security project focused on protecting files with strong symmetric encryption.',
+                points:['AES-256 encryption/decryption','Key-management considerations','Simple user-facing workflow']
+            },
+            kavi: {
+                title:'Kavi — AI Assistant',
+                tech:'AI · DeepSeek',
+                description:'A voice and text AI assistant designed to combine conversational intelligence with local PC-control capabilities.',
+                points:['Speech recognition + text interaction','DeepSeek integration for AI responses','PC-control automation']
+            },
+            'hls-properties': {
+                title:'HLS Properties — Cars',
+                tech:'Web · Real Estate',
+                description:'A modern web project focused on presenting property and car listings through a clean, responsive browsing experience.',
+                points:['Responsive listing-focused interface','Clear presentation of vehicle/property information','Designed for a smooth browsing experience']
+            },
+            chatx: {
+                title:'ChatX',
+                tech:'Full Stack · Chat',
+                description:'A chat application focused on real-time communication and a responsive messaging experience.',
+                points:['Real-time messaging experience','Responsive chat interface','Designed around fast, simple communication']
+            }
+        };
+
+        const modal = document.getElementById('projectModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalTech = document.getElementById('modalTech');
+        const modalDescription = document.getElementById('modalDescription');
+        const modalPoints = document.getElementById('modalPoints');
+
+        document.querySelectorAll('.project-card[data-project]').forEach(card => {
+            card.addEventListener('click', () => {
+                const d = projectDetails[card.dataset.project];
+                modalTitle.textContent = d.title;
+                modalTech.textContent = d.tech;
+                modalDescription.textContent = d.description;
+                modalPoints.innerHTML = d.points.map(p => `<li>${p}</li>`).join('');
+                modal.classList.add('open');
+                modal.setAttribute('aria-hidden','false');
+            });
         });
+
+        function closeModal() {
+            modal.classList.remove('open');
+            modal.setAttribute('aria-hidden','true');
+        }
+        document.getElementById('modalClose').addEventListener('click', closeModal);
+        modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+        // Small count-up animation
+        document.querySelectorAll('[data-counter]').forEach(el => {
+            const target = Number(el.dataset.counter);
+            const decimals = target % 1 ? 2 : 0;
+            let start = 0;
+            const duration = 900;
+            const startTime = performance.now();
+            const tick = now => {
+                const progress = Math.min((now - startTime) / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                el.textContent = (start + (target-start)*eased).toFixed(decimals);
+                if (progress < 1) requestAnimationFrame(tick);
+            };
+            requestAnimationFrame(tick);
+        });
+
     </script>
 </body>
 </html>
